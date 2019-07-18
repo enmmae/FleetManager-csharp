@@ -7,8 +7,8 @@ namespace Eatech.FleetManager.ApplicationCore.Interfaces
 {
     public interface ICarService
     {
-        Task<IEnumerable<Car>> GetAll();
+        Task<Car> Get(string registration);
 
-        Task<Car> Get(Guid id);
+        Task<IEnumerable<Car>> GetAll();
     }
 }

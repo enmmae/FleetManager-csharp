@@ -1,9 +1,11 @@
-﻿using Eatech.FleetManager.ApplicationCore.Interfaces;
+﻿using Eatech.FleetManager.ApplicationCore.Entities;
+using Eatech.FleetManager.ApplicationCore.Interfaces;
 using Eatech.FleetManager.ApplicationCore.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Eatech.FleetManager.Web
 {
@@ -19,6 +21,14 @@ namespace Eatech.FleetManager.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<FleetManagerDatabaseSettings>(
+                Configuration.GetSection(nameof(FleetManagerDatabaseSettings)));
+
+            services.AddSingleton<IFleetManagerDatabaseSettings>(sp =>
+                sp.GetRequiredService<IOptions<FleetManagerDatabaseSettings>>().Value);
+
+            services.AddSingleton<CarService>();
+
             services.AddMvc();
             services.AddScoped<ICarService, CarService>();
         }

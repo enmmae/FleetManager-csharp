@@ -5,36 +5,30 @@ using System.Linq;
 using System.Threading.Tasks;
 using Eatech.FleetManager.ApplicationCore.Entities;
 using Eatech.FleetManager.ApplicationCore.Interfaces;
+using MongoDB.Driver;
 
 namespace Eatech.FleetManager.ApplicationCore.Services
 {
     public class CarService : ICarService
     {
-        /// <summary>
-        ///     Remove this. Temporary car storage before proper data storage is implemented.
-        /// </summary>
-        private static readonly ImmutableList<Car> TempCars = new List<Car>
+        private readonly IMongoCollection<Car> _cars;
+
+        public CarService(IFleetManagerDatabaseSettings settings)
         {
-            new Car
-            {
-                Id = Guid.Parse("d9417f10-5c79-44a0-9137-4eba914a82a9"),
-                ModelYear = 1998
-            },
-            new Car
-            {
-                Id = Guid.NewGuid(),
-                ModelYear = 2007
-            }
-        }.ToImmutableList();
+            var client = new MongoClient(settings.ConnectionString);
+            var database = client.GetDatabase(settings.DatabaseName);
+
+            _cars = database.GetCollection<Car>(settings.CarsCollectionName);
+        }
+
+        public async Task<Car> Get(string registration)
+        {
+            return await _cars.Find<Car>(car => car.Registration == registration).FirstOrDefaultAsync();
+        }
 
         public async Task<IEnumerable<Car>> GetAll()
         {
-            return await Task.FromResult(TempCars);
-        }
-
-        public async Task<Car> Get(Guid id)
-        {
-            return await Task.FromResult(TempCars.FirstOrDefault(c => c.Id == id));
+            return await _cars.Find(car => true).ToListAsync();
         }
     }
 }

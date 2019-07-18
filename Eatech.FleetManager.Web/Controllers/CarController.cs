@@ -19,35 +19,27 @@ namespace Eatech.FleetManager.Web.Controllers
         }
 
         /// <summary>
-        ///     Example HTTP GET: api/car
+        ///     Gets a car with given registration from the fleet.
         /// </summary>
-        [HttpGet]
-        public async Task<IEnumerable<CarDto>> Get()
+        [HttpGet("{registration}")]
+        public async Task<IActionResult> Get(string registration)
         {
-            return (await _carService.GetAll()).Select(c => new CarDto
-            {
-                Id = c.Id,
-                ModelYear = c.ModelYear
-            });
-        }
-
-        /// <summary>
-        ///     Example HTTP GET: api/car/570890e2-8007-4e5c-a8d6-c3f670d8a9be
-        /// </summary>
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(Guid id)
-        {
-            var car = await _carService.Get(id);
+            var car = await _carService.Get(registration);
             if (car == null)
             {
                 return NotFound();
             }
 
-            return Ok(new CarDto
-            {
-                Id = car.Id,
-                ModelYear = car.ModelYear
-            });
+            return Ok(new CarDto(car));
+        }
+
+        /// <summary>
+        ///     Gets all cars of the fleet.
+        /// </summary>
+        [HttpGet]
+        public async Task<IEnumerable<CarDto>> Get()
+        {
+            return (await _carService.GetAll()).Select(c => new CarDto(c));
         }
     }
 }
