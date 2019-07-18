@@ -21,13 +21,13 @@ namespace Eatech.FleetManager.ApplicationCore.Entities
         [BsonElement("year")]
         public int ModelYear { get; set; }
 
-        [BsonElement("inspectiondate")]
+        [BsonElement("inspection date")]
         public string InspectionDate { get; set; }
 
-        [BsonElement("enginesize")]
+        [BsonElement("engine size")]
         public int EngineSize { get; set; }
 
-        [BsonElement("enginepower")]
+        [BsonElement("engine power")]
         public int EnginePower { get; set; }
     }
 }
